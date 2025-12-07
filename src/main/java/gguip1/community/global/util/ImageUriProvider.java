@@ -16,6 +16,6 @@ public class ImageUriProvider {
         if (key == null || key.isEmpty()) {
             return null;
         }
-        return "%s/%s".formatted(domainUrl, key);
+        return "%s%s".formatted(domainUrl, key);
     }
 }
