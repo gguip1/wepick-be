@@ -46,6 +46,18 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("update_user_success", userService.updateUser(userId, requestBody)));
     }
 
+    @PatchMapping("/users/me/profile-image")
+    public ResponseEntity<ApiResponse<UserUpdateResponse>> updateMyProfileImage(@Valid @RequestBody UserProfileImageUpdateRequest requestBody) {
+        Long userId = SecurityContext.getCurrentUserId();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("update_profile_image_success", userService.updateUserProfileImage(userId, requestBody)));
+    }
+
+    @PatchMapping("/users/me/nickname")
+    public ResponseEntity<ApiResponse<UserUpdateResponse>> updateMyNickname(@Valid @RequestBody UserNicknameUpdateRequest requestBody) {
+        Long userId = SecurityContext.getCurrentUserId();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("update_nickname_success", userService.updateUserNickname(userId, requestBody)));
+    }
+
     @PatchMapping("/users/me/password")
     public ResponseEntity<ApiResponse<Void>> updateMyPassword(@Valid @RequestBody UserPasswordUpdateRequest requestBody,
                                                               HttpServletRequest request,

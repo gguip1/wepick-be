@@ -11,6 +11,7 @@ import gguip1.community.domain.user.repository.UserRepository;
 import gguip1.community.global.exception.ErrorCode;
 import gguip1.community.global.exception.ErrorException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -79,6 +80,46 @@ public class UserService {
         }
 
         user.updateProfile(profileImage, request.nickname());
+
+        userRepository.save(user);
+
+        return userMapper.toUserUpdateResponse(user);
+    }
+
+    @Transactional
+    public UserUpdateResponse updateUserProfileImage(Long userId, @Valid UserProfileImageUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ErrorException(ErrorCode.USER_NOT_FOUND));
+
+        Image profileImage = null;
+        if (request.profileImageId() != null){
+            profileImage = imageRepository.findById(request.profileImageId())
+                    .orElseThrow(() -> new ErrorException(ErrorCode.NOT_FOUND));
+        }
+
+        user.updateProfileImage(profileImage);
+
+        userRepository.save(user);
+
+        return userMapper.toUserUpdateResponse(user);
+    }
+
+    @Transactional
+    public UserUpdateResponse updateUserNickname(Long userId, @Valid UserNicknameUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ErrorException(ErrorCode.USER_NOT_FOUND));
+
+        if (request.nickname() == null || request.nickname().isBlank()) {
+            throw new ErrorException(ErrorCode.VALIDATION_FAILED);
+        }
+
+        if (!request.nickname().equals(user.getNickname())) {
+            if (userRepository.existsByNickname(request.nickname())) {
+                throw new ErrorException(ErrorCode.DUPLICATE_NICKNAME);
+            }
+        }
+
+        user.updateNickname(request.nickname());
 
         userRepository.save(user);
 
