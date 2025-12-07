@@ -9,7 +9,7 @@ spring:
         static: ap-northeast-2
 
   datasource:
-    url: jdbc:mysql://${database.url}/community?serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mysql://${database.url}/community?serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
     username: ${database.username}
     password: ${database.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -27,6 +27,9 @@ spring:
     jdbc:
       initialize-schema: never
     timeout: 1800
+
+  jackson:
+    time-zone: Asia/Seoul
 
 cloud:
   aws:
