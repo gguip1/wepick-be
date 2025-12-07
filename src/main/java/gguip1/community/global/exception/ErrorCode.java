@@ -13,6 +13,7 @@ public enum ErrorCode {
     INCORRECT_OLD_PASSWORD(HttpStatus.BAD_REQUEST, "INCORRECT_OLD_PASSWORD", "기존 비밀번호가 올바르지 않습니다."),
     PASSWORD_MISMATCH(HttpStatus.UNAUTHORIZED, "PASSWORD_MISMATCH","비밀번호가 일치하지 않습니다."),
     PASSWORD_NOT_CHANGED( HttpStatus.BAD_REQUEST, "PASSWORD_NOT_CHANGED", "새 비밀번호가 기존 비밀번호와 동일합니다."),
+    TOO_MANY_IMAGES(HttpStatus.BAD_REQUEST, "TOO_MANY_IMAGES", "이미지는 최대 5장까지 업로드할 수 있습니다."),
 
     // 401
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "인증이 필요합니다."),
