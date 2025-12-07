@@ -20,9 +20,14 @@ public class ImageController {
     private final ImageService imageService;
 
         @PostMapping("/images/{type}/presigned-url")
-        public PresignedImageUploadResponse getPresignedUrl(
+        public ResponseEntity<ApiResponse<PresignedImageUploadResponse>> getPresignedUrl(
                 @PathVariable("type") String type,
                 @RequestBody PresignedUrlRequest presignedUrlRequest) {
-            return imageService.getPresignedUrl(type, presignedUrlRequest.originalFilename());
+            return ResponseEntity.status(HttpStatus.OK).body(
+                ApiResponse.success(
+                        "presigned_url_created",
+                        imageService.getPresignedUrl(type, presignedUrlRequest.originalFilename())
+                )
+            );
         }
 }
