@@ -10,11 +10,13 @@ public enum ErrorCode {
     // 400
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "BAD_REQUEST", "잘못된 요청입니다."),
     VALIDATION_FAILED(HttpStatus.BAD_REQUEST,  "VALIDATION_ERROR", "요청 데이터가 올바르지 않습니다."),
+    INCORRECT_OLD_PASSWORD(HttpStatus.BAD_REQUEST, "INCORRECT_OLD_PASSWORD", "기존 비밀번호가 올바르지 않습니다."),
+    PASSWORD_MISMATCH(HttpStatus.UNAUTHORIZED, "PASSWORD_MISMATCH","비밀번호가 일치하지 않습니다."),
+    PASSWORD_NOT_CHANGED( HttpStatus.BAD_REQUEST, "PASSWORD_NOT_CHANGED", "새 비밀번호가 기존 비밀번호와 동일합니다."),
 
     // 401
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "인증이 필요합니다."),
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", "인증 정보가 올바르지 않습니다."),
-    PASSWORD_MISMATCH(HttpStatus.UNAUTHORIZED, "PASSWORD_MISMATCH","비밀번호가 일치하지 않습니다."),
     USER_NOT_FOUND(HttpStatus.UNAUTHORIZED, "USER_NOT_FOUND","사용자를 찾을 수 없습니다."),
     SESSION_EXPIRED(HttpStatus.UNAUTHORIZED, "SESSION_EXPIRED", "세션이 만료되었습니다. 다시 로그인해주세요."),
 

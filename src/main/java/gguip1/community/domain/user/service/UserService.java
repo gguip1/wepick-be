@@ -128,15 +128,22 @@ public class UserService {
 
     @Transactional
     public void updateUserPassword(Long userId, UserPasswordUpdateRequest request){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ErrorException(ErrorCode.USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
+            throw new ErrorException(ErrorCode.INCORRECT_OLD_PASSWORD);
+        }
+
+        if (request.oldPassword().equals(request.newPassword())) {
+            throw new ErrorException(ErrorCode.PASSWORD_NOT_CHANGED);
+        }
+
         if (!request.newPassword().equals(request.newPassword2())){
             throw new ErrorException(ErrorCode.PASSWORD_MISMATCH);
         }
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ErrorException(ErrorCode.USER_NOT_FOUND));
-
-        String encodedPassword = passwordEncoder.encode(request.newPassword());
-        user.updatePassword(encodedPassword);
+        user.updatePassword(passwordEncoder.encode(request.newPassword()));
 
         userRepository.save(user);
     }
