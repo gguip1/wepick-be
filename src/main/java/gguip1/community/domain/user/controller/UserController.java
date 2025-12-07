@@ -6,6 +6,7 @@ import gguip1.community.domain.user.dto.response.UserNicknameCheckResponse;
 import gguip1.community.domain.user.dto.response.UserResponse;
 import gguip1.community.domain.user.dto.response.UserUpdateResponse;
 import gguip1.community.domain.user.service.UserService;
+import gguip1.community.global.auth.annotation.Auth;
 import gguip1.community.global.context.SecurityContext;
 import gguip1.community.global.response.ApiResponse;
 import jakarta.servlet.http.Cookie;
@@ -29,6 +30,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Registration successful", null));
     }
 
+    @Auth
     @GetMapping("/users/me")
     public ResponseEntity<ApiResponse<UserResponse>> getMyInfo() {
         Long userId = SecurityContext.getCurrentUserId();
@@ -40,24 +42,28 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("get_user_success", userService.getUser(userId)));
     }
 
+    @Auth
     @PatchMapping("/users/me")
     public ResponseEntity<ApiResponse<UserUpdateResponse>> updateMyInfo(@Valid @RequestBody UserUpdateRequest requestBody) {
         Long userId = SecurityContext.getCurrentUserId();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("update_user_success", userService.updateUser(userId, requestBody)));
     }
 
+    @Auth
     @PatchMapping("/users/me/profile-image")
     public ResponseEntity<ApiResponse<UserUpdateResponse>> updateMyProfileImage(@Valid @RequestBody UserProfileImageUpdateRequest requestBody) {
         Long userId = SecurityContext.getCurrentUserId();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("update_profile_image_success", userService.updateUserProfileImage(userId, requestBody)));
     }
 
+    @Auth
     @PatchMapping("/users/me/nickname")
     public ResponseEntity<ApiResponse<UserUpdateResponse>> updateMyNickname(@Valid @RequestBody UserNicknameUpdateRequest requestBody) {
         Long userId = SecurityContext.getCurrentUserId();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("update_nickname_success", userService.updateUserNickname(userId, requestBody)));
     }
 
+    @Auth
     @PatchMapping("/users/me/password")
     public ResponseEntity<ApiResponse<Void>> updateMyPassword(@Valid @RequestBody UserPasswordUpdateRequest requestBody,
                                                               HttpServletRequest request,
@@ -79,6 +85,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Auth
     @DeleteMapping("/users/me")
     public ResponseEntity<Void> deleteMyAccount(HttpServletRequest httpRequest) {
         Long userId = SecurityContext.getCurrentUserId();

@@ -2,6 +2,7 @@ package gguip1.community.domain.image.controller;
 
 import gguip1.community.domain.image.dto.PresignedImageUploadResponse;
 import gguip1.community.domain.image.service.ImageService;
+import gguip1.community.global.auth.annotation.Auth;
 import gguip1.community.global.infra.dto.PresignedUrlRequest;
 import gguip1.community.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.List;
 public class ImageController {
     private final ImageService imageService;
 
+    @Auth
     @PostMapping("/images/profile/presigned-url")
     public ResponseEntity<ApiResponse<PresignedImageUploadResponse>> getPresignedUrl(
             @RequestBody PresignedUrlRequest presignedUrlRequest) {
@@ -28,6 +30,7 @@ public class ImageController {
         );
     }
 
+    @Auth
     @PostMapping("/images/post/presigned-urls")
     public ResponseEntity<ApiResponse<List<PresignedImageUploadResponse>>> getMultiplePresignedUrls(
             @RequestBody List<PresignedUrlRequest> presignedUrlRequest) {
