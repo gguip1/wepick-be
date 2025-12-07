@@ -54,7 +54,10 @@ cors:
   max-age: 3600
 
 auth:
-  excluded-paths: ${auth.excluded-paths}
+  excluded-paths:
+    get: ${auth.excluded-paths.GET}
+    post: ${auth.excluded-paths.POST}
+    delete: ${auth.excluded-paths.DELETE}
 
 server:
   servlet:

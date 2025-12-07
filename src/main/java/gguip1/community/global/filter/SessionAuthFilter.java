@@ -18,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -30,8 +31,16 @@ public class SessionAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
+        String method = request.getMethod();
 
-        return authProperties.getExcludedPaths().stream()
+        List<String> excludes = switch (method) {
+            case "GET" -> authProperties.getExcludedPaths().getGet();
+            case "POST" -> authProperties.getExcludedPaths().getPost();
+            case "DELETE" -> authProperties.getExcludedPaths().getDelete();
+            default -> List.of();
+        };
+
+        return excludes.stream()
                 .map(String::trim)
                 .anyMatch(pattern -> matcher.match(pattern, path));
     }
