@@ -4,6 +4,7 @@ import gguip1.community.domain.post.dto.response.PostCommentPageItemResponse;
 import gguip1.community.domain.post.dto.response.PostCommentPageResponse;
 import gguip1.community.domain.post.dto.request.PostCommentRequest;
 import gguip1.community.domain.post.service.PostCommentService;
+import gguip1.community.global.auth.annotation.Auth;
 import gguip1.community.global.context.SecurityContext;
 import gguip1.community.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +25,14 @@ public class PostCommentController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Comments retrieved successfully", response));
     }
 
+    @Auth
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<ApiResponse<PostCommentPageItemResponse>> createComment(@PathVariable Long postId,
                                                                                   @RequestBody PostCommentRequest postCommentRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Comment created", postCommentService.createComment(SecurityContext.getCurrentUserId(), postId, postCommentRequest)));
     }
 
+    @Auth
     @PatchMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<ApiResponse<Void>> updateComment(@PathVariable Long postId,
                                                            @PathVariable Long commentId,
@@ -38,6 +41,7 @@ public class PostCommentController {
         return ResponseEntity.noContent().build();
     }
 
+    @Auth
     @DeleteMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<ApiResponse<Void>> deleteComment(@PathVariable Long postId,
                                                            @PathVariable Long commentId) {

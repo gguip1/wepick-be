@@ -5,6 +5,7 @@ import gguip1.community.global.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,8 +24,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ErrorException.class)
     public ResponseEntity<ApiResponse<Void>> handleErrorException(ErrorException e){
         ErrorCode errorCode = e.getErrorCode();
+        HttpStatus status = errorCode.getStatus();
 
-        log.error("Error occurred: {}", errorCode.getMessage(), e);
+        if (status.is5xxServerError()) {
+            log.error("Server error: {} ({})", errorCode.getMessage(), errorCode.getCode(), e);
+        } else {
+            // 4xx 는 한 줄만 (스택트레이스 X)
+            log.info("Client error: {} ({})", errorCode.getMessage(), errorCode.getCode());
+        }
 
         return ResponseEntity
                 .status(errorCode.getStatus())
@@ -37,7 +44,7 @@ public class GlobalExceptionHandler {
                 "유효하지 않은 입력 값입니다."
         );
 
-        log.error("Validation error: {}", e.getMessage(), e);
+        log.info("Validation error: {}", e.getMessage());
 
         return ResponseEntity
                 .badRequest()
@@ -47,10 +54,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ApiResponse<Void>> handleMaxSizeException(MaxUploadSizeExceededException e) {
         ErrorResponse errorResponse = new ErrorResponse(
-                "파일 크기가 최대 허용 크기(5MB)를 초과했습니다."
+                "파일 크기가 최대 허용 크기(5MB)를 초과했습니다. 5MB 이하의 파일만 업로드할 수 있습니다."
         );
 
-        log.error("File size exceeded: {}", e.getMessage(), e);
+        log.info("File size exceeded: {}", e.getMessage());
 
         return ResponseEntity
                 .status(413)
@@ -60,10 +67,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SizeLimitExceededException.class)
     public ResponseEntity<ApiResponse<Void>> handleSizeLimitExceededException(SizeLimitExceededException e) {
         ErrorResponse errorResponse = new ErrorResponse(
-                "요청 크기가 최대 허용 크기(20MB)를 초과했습니다."
+                "요청 전체 크기가 최대 허용 크기(25MB)를 초과했습니다. 여러 파일의 총 용량을 25MB 이하로 줄여주세요."
         );
 
-        log.error("Request size exceeded: {}", e.getMessage(), e);
+        log.info("Request size exceeded: {}", e.getMessage());
 
         return ResponseEntity
                 .status(413)
@@ -73,10 +80,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FileSizeLimitExceededException.class)
     public ResponseEntity<ApiResponse<Void>> handleFileSizeLimitExceededException(FileSizeLimitExceededException e) {
         ErrorResponse errorResponse = new ErrorResponse(
-                "파일 크기가 최대 허용 크기(5MB)를 초과했습니다."
+                "파일 크기가 최대 허용 크기(5MB)를 초과했습니다. 5MB 이하의 파일만 업로드할 수 있습니다."
         );
 
-        log.error("File size exceeded: {}", e.getMessage(), e);
+        log.info("File size exceeded (apache): {}", e.getMessage());
 
         return ResponseEntity
                 .status(413)

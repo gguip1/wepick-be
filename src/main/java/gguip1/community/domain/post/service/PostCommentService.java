@@ -45,7 +45,7 @@ public class PostCommentService {
                 .limit(size)
                 .map(postComment -> {
                     User user = postComment.getUser();
-                    boolean isAuthor = userId.equals(postComment.getUser().getUserId());
+                    boolean isAuthor = userId != null && userId.equals(postComment.getUser().getUserId());
 
                     return postCommentMapper.toPostCommentPageItemResponse(postComment, user, isAuthor);
                 }).toList();
@@ -73,7 +73,7 @@ public class PostCommentService {
                 .limit(size)
                 .map(postComment -> {
                     User user = postComment.getUser();
-                    boolean isAuthor = userId.equals(postComment.getUser().getUserId());
+                    boolean isAuthor = userId != null && userId.equals(postComment.getUser().getUserId());
 
                     return postCommentMapper.toPostCommentPageItemResponse(postComment, user, isAuthor);
                 }).collect(Collectors.toCollection(ArrayList::new));

@@ -6,6 +6,7 @@ import gguip1.community.domain.post.dto.response.PostDetailResponse;
 import gguip1.community.domain.post.dto.response.PostPageItemResponse;
 import gguip1.community.domain.post.dto.response.PostPageResponse;
 import gguip1.community.domain.post.service.PostService;
+import gguip1.community.global.auth.annotation.Auth;
 import gguip1.community.global.context.SecurityContext;
 import gguip1.community.global.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class PostController {
     private final PostService postService;
 
+    @Auth
     @PostMapping("/posts")
     public ResponseEntity<ApiResponse<PostPageItemResponse>> createPost(@Valid @RequestBody PostCreateRequest postCreateRequest) {
         PostPageItemResponse response = postService.createPost(SecurityContext.getCurrentUserId(), postCreateRequest);
@@ -46,12 +48,14 @@ public class PostController {
         );
     }
 
+    @Auth
     @PatchMapping("/posts/{postId}")
     public ResponseEntity<ApiResponse<Void>> updatePost(@PathVariable Long postId, @RequestBody PostUpdateRequest postUpdateRequest) {
         postService.updatePost(SecurityContext.getCurrentUserId(), postId, postUpdateRequest);
         return ResponseEntity.ok(ApiResponse.success("Post updated", null));
     }
 
+    @Auth
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Long postId) {
         postService.deletePost(SecurityContext.getCurrentUserId(), postId);

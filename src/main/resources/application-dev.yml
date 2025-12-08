@@ -13,6 +13,14 @@ spring:
     username: ${database.username}
     password: ${database.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 300000
+      max-lifetime: 600000
+      connection-timeout: 30000
+      pool-name: CommunityHikariCP
+      leak-detection-threshold: 2000
 
   jpa:
     hibernate:
@@ -27,6 +35,20 @@ spring:
     jdbc:
       initialize-schema: never
     timeout: 1800
+
+  jackson:
+    time-zone: Asia/Seoul
+
+cloud:
+  aws:
+    s3:
+      domain: https://s3.ap-northeast-2.amazonaws.com/ktb-community-images-bucket/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
 
 logging:
   level:
@@ -49,5 +71,14 @@ cors:
   max-age: 3600
 
 auth:
-  excluded-paths: ${auth.excluded-paths}
+  excluded-paths:
+    get: ${auth.excluded-paths.GET}
+    post: ${auth.excluded-paths.POST}
+    delete: ${auth.excluded-paths.DELETE}
 
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: None
+        secure: true

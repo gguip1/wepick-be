@@ -1,8 +1,41 @@
 package gguip1.community.global.interceptor;
 
-/**
- * 인터셉터 설정 클래스
- * 현재는 빈 클래스이며, 추후 인가 관련 인터셉터 설정에 사용될 예정
- */
-public class AuthInterceptor {
+import gguip1.community.global.auth.annotation.Auth;
+import gguip1.community.global.context.SecurityContext;
+import gguip1.community.global.exception.ErrorCode;
+import gguip1.community.global.exception.ErrorException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import java.util.Objects;
+
+@Slf4j
+@Component
+public class AuthInterceptor implements HandlerInterceptor {
+
+    @Override
+    public boolean preHandle(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull Object handler) {
+        if (!(handler instanceof HandlerMethod handlerMethod)) {
+            return true;
+        }
+
+        Auth auth = handlerMethod.getMethodAnnotation(Auth.class);
+        if (auth == null) {
+            return true; // @Auth 어노테이션이 없으면 통과
+        }
+
+        if (Objects.isNull(SecurityContext.getCurrentUserId())) {
+            throw new ErrorException(ErrorCode.UNAUTHORIZED);
+        }
+
+        return true;
+    }
 }

@@ -1,6 +1,7 @@
 package gguip1.community.global.config;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.logging.Filter;
 
 @Configuration
+@Slf4j
 public class CorsConfig {
 
 //    @Value("${cors.allow-credentials}")
@@ -40,7 +42,7 @@ public class CorsConfig {
 //        config.setMaxAge(maxAge);
         config.setAllowCredentials(true);
         config.setAllowedOrigins(List.of("http://localhost:3000", "https://wepick.cloud"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setMaxAge(3600L);
 

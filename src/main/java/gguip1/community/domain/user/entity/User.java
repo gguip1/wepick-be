@@ -46,6 +46,16 @@ public class User extends SoftDeleteEntity {
         }
     }
 
+    public void updateProfileImage(Image profileImage){
+        this.profileImage = profileImage;
+    }
+
+    public void updateNickname(String nickname){
+        if (nickname != null){
+            this.nickname = nickname;
+        }
+    }
+
     public void updatePassword(String password){
         this.password = password;
     }

@@ -1,8 +1,28 @@
 package gguip1.community.global.config;
 
-/**
- * 인터셉터 설정 클래스
- * 현재는 빈 클래스이며, 추후 인가 관련 인터셉터 설정에 사용될 예정
- */
-public class InterceptorConfig {
+import gguip1.community.global.interceptor.AuthInterceptor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+@RequiredArgsConstructor
+public class InterceptorConfig implements WebMvcConfigurer {
+
+    private final AuthInterceptor authInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/auth",
+                        "/users",
+                        "/users/check-email",
+                        "/users/check-nickname",
+                        "/health",
+                        "/error"
+                );
+    }
 }
