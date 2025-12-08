@@ -69,24 +69,27 @@
 flowchart LR
     subgraph "Development"
         A[Local Dev] -->|push| B[dev branch]
+        G[Local Dev] -->|push| H[main branch]
     end
 
-    subgraph "GitHub Actions"
+    subgraph "GitHub Actions - Dev"
         B -->|trigger| C[dev-ci.yml]
         C -->|build & test| D[Docker Image]
-        D -->|push| E[ECR/DockerHub]
+        D -->|push to ECR| E[dev-cd.yml]
+        E -->|deploy| F[Dev EC2]
     end
 
-    subgraph "Deployment"
-        E -->|deploy| F[Dev EC2]
-        G[main branch] -->|trigger| H[prod-ci.yml]
-        H -->|prod-cd.yml| I[Prod EC2]
+    subgraph "GitHub Actions - Prod"
+        H -->|trigger| I[prod-ci.yml]
+        I -->|build & test| J[Docker Image]
+        J -->|push to ECR| K[prod-cd.yml]
+        K -->|deploy| L[Prod EC2]
     end
 ```
 
-| Branch | Workflow                      | Target |
-|--------|-------------------------------|--------|
-| `dev` | `dev-ci.yml` -> `dev-cd.yml`   | Development 환경 자동 배포 |
+| Branch | Workflow | Target |
+|--------|----------|--------|
+| `dev` | `dev-ci.yml` → `dev-cd.yml` | Development 환경 자동 배포 |
 | `main` | `prod-ci.yml` → `prod-cd.yml` | Production 환경 자동 배포 |
 
 > **상세 내용**: ***(작성 예정)***
@@ -309,7 +312,7 @@ sequenceDiagram
 | Backend Architecture | 시스템 구조, 데이터 흐름, 컴포넌트 설명 | [docs/architecture/BACKEND_ARCHITECTURE.md](./docs/architecture/BACKEND_ARCHITECTURE.md) |
 | Topic API Spec | 양자택일 투표 API 명세 | [docs/api/topic_api.md](./docs/api/topic_api.md) |
 | Docker Optimization | 이미지 최적화 과정 | [docs/problems/docker/README.md](./docs/problems/docker/README.md) |
-| Coding Conventions | 코딩 규칙 및 패턴 | [docs/gemini/2_CODING_CONVENTIONS.md](./docs/gemini/2_CODING_CONVENTIONS.md) |
+| Coding Conventions | 코딩 규칙 및 패턴 | [docs/architecture/CODING_CONVENTIONS.md](./docs/architecture/CODING_CONVENTIONS.md) |
 
 ### External Resources
 
