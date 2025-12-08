@@ -36,6 +36,12 @@ cloud:
     s3:
       domain: https://s3.ap-northeast-2.amazonaws.com/ktb-community-images-bucket/
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+
 logging:
   level:
     root: INFO
