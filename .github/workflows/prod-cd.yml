@@ -3,56 +3,21 @@ name: BE CD - PROD
 on:
   workflow_run:
     workflows: ["BE CI - PROD"]
-    types:
-      - completed
-    paths-ignore:
-      - "docs/**"
-      - "**.md"
+    types: [completed]
 
 jobs:
-  deploy:
+  trigger-infra-deploy:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
-
-      - name: Upload Docker Compose file to S3
+      - name: Trigger wepick-infra deploy.yml
+        env:
+          GH_TOKEN: ${{ secrets.INFRA_DISPATCH_TOKEN }}
+          IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
         run: |
-          aws s3 cp ./docker/docker-compose.yml s3://${{ secrets.AWS_S3_BUCKET_NAME }}/be/prod/docker-compose.yml
-
-      - name: Deploy to EC2 with Docker
-        run: |
-          aws ssm send-command \
-            --region ap-northeast-2 \
-            --instance-ids ${{ secrets.AWS_EC2_INSTANCE_ID }} \
-            --document-name "AWS-RunShellScript" \
-            --comment "Executed by Github Actions" \
-            --parameters '{
-              "commands": [
-                "aws s3 cp s3://${{ secrets.AWS_S3_BUCKET_NAME }}/be/prod/docker-compose.yml /home/ubuntu/docker-compose.yml",
-                "sudo su - ubuntu -c \"cd /home/ubuntu && docker compose pull && docker compose up -d && docker image prune -f\""
-              ]
-            }'
-
-      - name: Health Check
-        run: |
-          aws ssm send-command \
-            --region ap-northeast-2 \
-            --instance-ids ${{ secrets.AWS_EC2_INSTANCE_ID }} \
-            --document-name "AWS-RunShellScript" \
-            --comment "Health Check Executed by Github Actions" \
-            --parameters '{
-              "commands": [
-                "curl -f http://localhost:8080/api/health2 || exit 1"
-              ]
-            }'
-
+          gh api repos/gguip1/wepick-infra/dispatches \
+            -f event_type='deploy-be' \
+            -f client_payload[image_tag]="$IMAGE_TAG" \
+            -f client_payload[source_repo]="${{ github.repository }}" \
+            -f client_payload[source_sha]="$IMAGE_TAG"
