@@ -2,7 +2,7 @@ spring:
   config:
     activate:
       on-profile: prod
-    import: "aws-parameterstore:/ktb-community-backend-ps/"
+    import: "aws-parameterstore:/wepick/be/"
   cloud:
     aws:
       region:
