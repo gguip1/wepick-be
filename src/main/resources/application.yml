@@ -1,18 +1,60 @@
 spring:
   application:
-    name: "community"
+    name: "wepick-be"
 
-  messages:
-    basename: "ValidationMessages"
-    encoding: "UTF-8"
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/wepick-be}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+    timeout: 1800
+
+  # Spring Cloud AWS 자동설정 (S3Presigner bean이 region 필요)
+  cloud:
+    aws:
+      region:
+        static: ${AWS_REGION:ap-northeast-2}
+
+server:
   servlet:
-    multipart:
-      max-file-size: "5MB"
-      max-request-size: "25MB"
-      file-size-threshold: "2MB"
-      resolve-lazily: true
+    session:
+      cookie:
+        secure: ${SESSION_COOKIE_SECURE:false}
 
-  mvc:
-    servlet:
-      path: "/api"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+# TODO: presigned URL 방식으로 전환 후 ImageUriProvider 제거 시 함께 삭제
+cloud:
+  aws:
+    s3:
+      bucket-name: ${S3_BUCKET_NAME:ktb-community-images-bucket}
+      domain: ${CLOUD_AWS_S3_DOMAIN:https://example.com/}
+
+cors:
+  allow-credentials: true
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+  allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+  allowed-headers: "*"
+  max-age: 3600
+
+auth:
+  excluded-paths:
+    get:
+      - /actuator/health
+    post:
+      - /users
+      - /auth/login
+    delete: []

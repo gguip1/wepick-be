@@ -1,7 +1,5 @@
 package gguip1.community.global.config;
 
-
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -10,41 +8,35 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Filter;
 
 @Configuration
-@Slf4j
 public class CorsConfig {
 
-//    @Value("${cors.allow-credentials}")
-//    private Boolean allowCredentials;
-//
-//    @Value("#{'${cors.allowed-origins}'.split(',')}.![trim()]}")
-//    private List<String> allowedOrigins;
-//
-//    @Value("#{'${cors.allowed-methods}'.split(',')}.![trim()]}")
-//    private List<String> allowedMethods;
-//
-//    @Value("#{'${cors.allowed-headers}'.split(',')}.![trim()]}")
-//    private List<String> allowedHeaders;
-//
-//    @Value("${cors.max-age}")
-//    private Long maxAge;
+    @Value("${cors.allow-credentials}")
+    private Boolean allowCredentials;
+
+    @Value("${cors.allowed-origins}")
+    private String allowedOrigins;
+
+    @Value("${cors.allowed-methods}")
+    private String allowedMethods;
+
+    @Value("${cors.allowed-headers}")
+    private String allowedHeaders;
+
+    @Value("${cors.max-age}")
+    private Long maxAge;
 
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-//        config.setAllowCredentials(allowCredentials);
-//        config.setAllowedOrigins(allowedOrigins);
-//        config.setAllowedMethods(allowedMethods);
-//        config.setAllowedHeaders(allowedHeaders);
-//        config.setMaxAge(maxAge);
-        config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:3000", "https://wepick.cloud"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setMaxAge(3600L);
+        config.setAllowCredentials(allowCredentials);
+        config.setAllowedOrigins(parseCsv(allowedOrigins));
+        config.setAllowedMethods(parseCsv(allowedMethods));
+        config.setAllowedHeaders(parseCsv(allowedHeaders));
+        config.setMaxAge(maxAge);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
@@ -54,7 +46,14 @@ public class CorsConfig {
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilterFilterRegistrationBean(CorsFilter corsFilter) {
         FilterRegistrationBean<CorsFilter> registrationBean = new FilterRegistrationBean<>(corsFilter);
-        registrationBean.setOrder(0); // 모든 필터 중에서 가장 먼저 실행되도록 설정
+        registrationBean.setOrder(0);
         return registrationBean;
+    }
+
+    private List<String> parseCsv(String value) {
+        return Arrays.stream(value.split(","))
+                .map(String::trim)
+                .filter(token -> !token.isEmpty())
+                .toList();
     }
 }
