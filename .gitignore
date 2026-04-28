@@ -42,3 +42,9 @@ application-dev-local.yml
 docker.dev-local
 
 cmd.txt
+
+.env
+
+# Claude
+.claude
+AGENTS.md
