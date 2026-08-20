@@ -5,14 +5,14 @@ import gguip1.community.domain.post.dto.response.AuthorResponse;
 import gguip1.community.domain.post.dto.response.PostPageItemResponse;
 import gguip1.community.domain.post.entity.Post;
 import gguip1.community.domain.user.entity.User;
-import gguip1.community.global.util.ImageUriProvider;
+import gguip1.community.domain.image.storage.ImageStorage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class PostMapper {
-    private final ImageUriProvider imageUriProvider;
+    private final ImageStorage imageStorage;
 
     public Post fromPostRequest(PostCreateRequest postCreateRequest, User user){
         return Post.builder()
@@ -23,8 +23,8 @@ public class PostMapper {
     }
 
     public PostPageItemResponse toPostPageItemResponse(Post post, User user, Integer likeCount, Integer commentCount, Integer viewCount){
-        String imageKey = user.getProfileImage() != null ? user.getProfileImage().getS3_key() : null;
-        String fullUrl = imageUriProvider.generateUrl(imageKey);
+        String imageKey = user.getProfileImage() != null ? user.getProfileImage().getStorageKey() : null;
+        String fullUrl = imageStorage.publicUrl(imageKey);
 
         return PostPageItemResponse.builder()
                 .postId(post.getPostId())

@@ -21,7 +21,7 @@ import gguip1.community.domain.user.entity.User;
 import gguip1.community.domain.user.repository.UserRepository;
 import gguip1.community.global.exception.ErrorCode;
 import gguip1.community.global.exception.ErrorException;
-import gguip1.community.global.util.ImageUriProvider;
+import gguip1.community.domain.image.storage.ImageStorage;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final PostLikeRepository postLikeRepository;
 
-    private final ImageUriProvider imageUriProvider;
+    private final ImageStorage imageStorage;
 
     private final PostMapper postMapper;
 
@@ -103,8 +103,8 @@ public class PostService {
                 .map(post -> {
                     User user = post.getUser();
 
-                    String profileImageKey = user.getProfileImage() != null ? user.getProfileImage().getS3_key() : null;
-                    String profileImageFullUrl = imageUriProvider.generateUrl(profileImageKey);;
+                    String profileImageKey = user.getProfileImage() != null ? user.getProfileImage().getStorageKey() : null;
+                    String profileImageFullUrl = imageStorage.publicUrl(profileImageKey);;
 
                     List<ImageResponse> images = post.getPostImages().stream()
                             .map(postImageMapper::toImageResponse)
@@ -155,8 +155,8 @@ public class PostService {
 
         log.info("User : {}", user);
 
-        String profileImageKey = user.getProfileImage() != null ? user.getProfileImage().getS3_key() : null;
-        String profileImageFullUrl = imageUriProvider.generateUrl(profileImageKey);;
+        String profileImageKey = user.getProfileImage() != null ? user.getProfileImage().getStorageKey() : null;
+        String profileImageFullUrl = imageStorage.publicUrl(profileImageKey);;
 
         List<ImageResponse> images = post.getPostImages().stream()
                 .map(postImageMapper::toImageResponse)
