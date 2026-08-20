@@ -1,28 +1,23 @@
 spring:
   application:
-    name: "wepick-be"
-
+    name: wepick-be
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/wepick-be}
     username: ${SPRING_DATASOURCE_USERNAME:root}
     password: ${SPRING_DATASOURCE_PASSWORD:root}
     driver-class-name: com.mysql.cj.jdbc.Driver
-
   jpa:
     hibernate:
       ddl-auto: update
-
   session:
     store-type: jdbc
     jdbc:
       initialize-schema: always
     timeout: 1800
-
-  # Spring Cloud AWS 자동설정 (S3Presigner bean이 region 필요)
-  cloud:
-    aws:
-      region:
-        static: ${AWS_REGION:ap-northeast-2}
+  servlet:
+    multipart:
+      max-file-size: ${APP_IMAGE_MAX_FILE_SIZE:5MB}
+      max-request-size: ${APP_IMAGE_MAX_REQUEST_SIZE:25MB}
 
 server:
   servlet:
@@ -37,12 +32,12 @@ management:
       exposure:
         include: health,info
 
-# TODO: presigned URL 방식으로 전환 후 ImageUriProvider 제거 시 함께 삭제
-cloud:
-  aws:
-    s3:
-      bucket-name: ${S3_BUCKET_NAME:ktb-community-images-bucket}
-      domain: ${CLOUD_AWS_S3_DOMAIN:https://example.com/}
+app:
+  image:
+    max-file-size-bytes: ${APP_IMAGE_MAX_FILE_SIZE_BYTES:5242880}
+    storage:
+      local-root: ${IMAGE_STORAGE_LOCAL_ROOT:/data/uploads}
+      public-prefix: ${IMAGE_PUBLIC_PREFIX:/uploads}
 
 cors:
   allow-credentials: true
@@ -57,5 +52,5 @@ auth:
       - /actuator/health
     post:
       - /users
-      - /auth/login
+      - /auth
     delete: []

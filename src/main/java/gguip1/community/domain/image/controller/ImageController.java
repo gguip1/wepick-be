@@ -1,16 +1,17 @@
 package gguip1.community.domain.image.controller;
 
-import gguip1.community.domain.image.dto.PresignedImageUploadResponse;
+import gguip1.community.domain.image.dto.ImageUploadResponse;
 import gguip1.community.domain.image.service.ImageService;
 import gguip1.community.global.auth.annotation.Auth;
-import gguip1.community.global.infra.dto.PresignedUrlRequest;
 import gguip1.community.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -19,31 +20,14 @@ public class ImageController {
     private final ImageService imageService;
 
     @Auth
-    @PostMapping("/images/profile/presigned-url")
-    public ResponseEntity<ApiResponse<PresignedImageUploadResponse>> getPresignedUrl(
-            @RequestBody PresignedUrlRequest presignedUrlRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.success(
-                    "presigned_url_created",
-                    imageService.getPresignedUrl(presignedUrlRequest.originalFilename())
-            )
-        );
+    @PostMapping(value = "/images/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<ImageUploadResponse>> uploadProfile(@RequestPart("file") MultipartFile file) {
+        return ResponseEntity.ok(ApiResponse.success("image_uploaded", imageService.uploadProfile(file)));
     }
 
     @Auth
-    @PostMapping("/images/post/presigned-urls")
-    public ResponseEntity<ApiResponse<List<PresignedImageUploadResponse>>> getMultiplePresignedUrls(
-            @RequestBody List<PresignedUrlRequest> presignedUrlRequest) {
-
-        List<String> originalFilenames = presignedUrlRequest.stream()
-                .map(PresignedUrlRequest::originalFilename)
-                .toList();
-
-        return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.success(
-                    "presigned_urls_created",
-                    imageService.getMultiplePresignedUrls(originalFilenames)
-            )
-        );
+    @PostMapping(value = "/images/posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<List<ImageUploadResponse>>> uploadPosts(@RequestPart("files") List<MultipartFile> files) {
+        return ResponseEntity.ok(ApiResponse.success("images_uploaded", imageService.uploadPosts(files)));
     }
 }

@@ -20,8 +20,8 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long imageId;
 
-    @Column(name = "s3_key", nullable = false)
-    private String s3_key;
+    @Column(name = "storage_key", nullable = false)
+    private String storageKey;
 
     @Builder.Default
     @Column(name = "status", nullable = false)
