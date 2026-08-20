@@ -1,8 +1,8 @@
-name: BE CD - PROD
+name: Legacy AWS BE CD - PROD
 
 on:
   workflow_run:
-    workflows: ["BE CI - PROD"]
+    workflows: ["Legacy AWS BE CI - PROD"]
     types: [completed]
 
 permissions:
