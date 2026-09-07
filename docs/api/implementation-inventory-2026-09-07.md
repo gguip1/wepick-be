@@ -1,9 +1,11 @@
-# 현재 API 구현 목록
+# 2026-09-07 API 구현 분석
 
 - 상태: Draft — 코드 기반 현황, 목표 API 계약이 아님
 - 분석일: 2026-09-07
 - BE 기준 커밋: `9611c9816a7a79b9cc2369b2126ec43a217b3cb0`
 - 검증: Controller·Service·DTO 정적 대조. HTTP·DB 실행 검증 및 OpenAPI 추출은 하지 않음.
+
+이 문서의 “현재”는 위 분석일·커밋 시점을 뜻합니다. 이후 API 변경은 이 기록에 덮어쓰지 않고 새 날짜의 분석 또는 현행 OpenAPI에 반영합니다. 분석 오류 정정 시 정정일·근거를 남깁니다.
 
 ## 경로와 공통 처리
 
@@ -111,4 +113,4 @@
 - [SessionAuthFilter.java](https://github.com/W-Gain/wepick-be/blob/9611c9816a7a79b9cc2369b2126ec43a217b3cb0/src/main/java/gguip1/community/global/filter/SessionAuthFilter.java)
 - [AuthInterceptor.java](https://github.com/W-Gain/wepick-be/blob/9611c9816a7a79b9cc2369b2126ec43a217b3cb0/src/main/java/gguip1/community/global/interceptor/AuthInterceptor.java)
 
-Springdoc 의존성은 있지만 이번 문서는 실행한 OpenAPI 사본이 아닙니다. [Product 현재 분석](https://github.com/W-Gain/wepick-product/blob/main/docs/current/README.md)에서 화면·데이터·목표 차이를 확인합니다. 목표 정책은 Product, 상세 구현 명세의 원본은 BE로 유지합니다.
+Springdoc 의존성은 있지만 이번 문서는 실행한 OpenAPI 사본이 아닙니다. [Product 2026-09-07 분석](https://github.com/W-Gain/wepick-product/blob/main/docs/analysis/2026-09-07/README.md)에서 화면·데이터·목표 차이를 확인합니다. 목표 정책은 Product, 상세 구현 명세의 원본은 BE로 유지합니다.
