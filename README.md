@@ -100,7 +100,7 @@ Existing AWS Terraform and deployment documents are legacy reference material on
 
 ## 문서
 
-- [현재 전체 API 구현 목록](docs/api/current-api-inventory.md) — 코드 기반 30개 엔드포인트·인증·입출력 원본
+- [2026-09-07 API 구현 분석](docs/api/implementation-inventory-2026-09-07.md) — 코드 기반 30개 엔드포인트·인증·입출력 원본
 
 - [제품·공통 설계](https://github.com/W-Gain/wepick-product)
 - [내부 아키텍처](docs/architecture/BACKEND_ARCHITECTURE.md)
